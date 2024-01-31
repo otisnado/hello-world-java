@@ -30,6 +30,6 @@ hello-world-java
 ````
 
 ## CI/CD tool
-Jenkins is used to build java artifact, analyze code, build and push to private reigstry in Amazon ECR container image with Kaniko and deploy to K8s cluster using Amazon EKS 
+Jenkins on Kubernetes is used to build java artifact, analyze code, build and push to private reigstry in Amazon ECR container image with Kaniko and deploy to K8s cluster using Amazon EKS 
 
 You can find repo of Hello world app in the follow [Link](https://github.com/otisnado/hello-world-java.git)
