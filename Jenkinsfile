@@ -41,25 +41,15 @@ pipeline {
             }
         }
 
-        stage('Sonar Scan'){
-            steps{
-                container('sonarcli'){
-                    withSonarQubeEnv(credentialsId: 'sonarQubeGlobalToken', installationName: 'testingSonarQubeCE') { 
-                    sh '''/opt/sonar-scanner/bin/sonar-scanner \
-                        -Dsonar.projectKey=otisnado_hello-world-java_AY1VgTvuC3IlfAv1HGV9 \
-                        -Dsonar.projectName=hello-world-java \
-                        -Dsonar.projectVersion=1.0 \
-                        -Dsonar.sources=src/main \
-                        -Dsonar.tests=src/test \
-                        -Dsonar.java.binaries=target/classes  \
-                        -Dsonar.language=java \
-                        -Dsonar.sourceEncoding=UTF-8 \
-                        -Dsonar.java.libraries=target/classes
-                    '''
+        stage('SonarQube Analysis') {
+            steps {
+                container('maven){
+                    def mvn = tool 'Default Maven';
+                    withSonarQubeEnv() {
+                        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=root_hello-world-java_314a7664-bb1d-4f4f-8bac-05e6fc8b8d9a -Dsonar.projectName='Hello World Java'"
                     }
                 }
-            }
-        }
+            }        
 
         stage('Wait for Quality Gate'){
             steps{
