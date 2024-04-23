@@ -61,26 +61,26 @@ pipeline {
             }
         }
 
-        stage('Build and Push container image') {
-            steps {
-                container('kaniko') {
-                    sh '/kaniko/executor --context `pwd` --destination ${AWS_ECR}:${BUILD_ID}'
-                }
-            }
-        }
+        // stage('Build and Push container image') {
+        //     steps {
+        //         container('kaniko') {
+        //             sh '/kaniko/executor --context `pwd` --destination ${AWS_ECR}:${BUILD_ID}'
+        //         }
+        //     }
+        // }
 
-        stage('Deploy to K8s') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'AWSCredentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
-                    container('k8s-deploy'){
-                        sh 'aws eks update-kubeconfig --region us-east-1 --name developmentCluster --kubeconfig `pwd`/config'
-                        sh 'kubectl apply -f k8s/00-namespace.yaml --kubeconfig=config'
-                        sh 'kubectl --kubeconfig=config set image -f k8s/01-deployment.yaml hello-world-java=${AWS_ECR}:${BUILD_ID} --local -o yaml | kubectl --kubeconfig=config apply -f -'
-                        sh 'kubectl apply -f k8s/02-service.yaml --kubeconfig=config'
-                    }
-                }
-            }
-        }
+        // stage('Deploy to K8s') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'AWSCredentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]){
+        //             container('k8s-deploy'){
+        //                 sh 'aws eks update-kubeconfig --region us-east-1 --name developmentCluster --kubeconfig `pwd`/config'
+        //                 sh 'kubectl apply -f k8s/00-namespace.yaml --kubeconfig=config'
+        //                 sh 'kubectl --kubeconfig=config set image -f k8s/01-deployment.yaml hello-world-java=${AWS_ECR}:${BUILD_ID} --local -o yaml | kubectl --kubeconfig=config apply -f -'
+        //                 sh 'kubectl apply -f k8s/02-service.yaml --kubeconfig=config'
+        //             }
+        //         }
+        //     }
+        // }
 
     }
 }
