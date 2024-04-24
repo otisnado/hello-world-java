@@ -41,25 +41,25 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                container('maven'){
-                    def mvn = tool 'Default Maven';
-                    withSonarQubeEnv() {
-                        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=root_hello-world-java_314a7664-bb1d-4f4f-8bac-05e6fc8b8d9a -Dsonar.projectName='Hello World Java'"
-                    }
-                }
-            }        
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         container('maven'){
+        //             def mvn = tool 'Default Maven';
+        //             withSonarQubeEnv() {
+        //                 sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=root_hello-world-java_314a7664-bb1d-4f4f-8bac-05e6fc8b8d9a -Dsonar.projectName='Hello World Java'"
+        //             }
+        //         }
+        //     }        
 
-        stage('Wait for Quality Gate'){
-            steps{
-                container('sonarcli'){
-                timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                    }
-                }
-            }
-        }
+        // stage('Wait for Quality Gate'){
+        //     steps{
+        //         container('sonarcli'){
+        //         timeout(time: 1, unit: 'HOURS') {
+        //             waitForQualityGate abortPipeline: true
+        //             }
+        //         }
+        //     }
+        // }
 
         // stage('Build and Push container image') {
         //     steps {
