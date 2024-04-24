@@ -22,7 +22,7 @@ pipeline {
             command:
             - sleep
             args:
-            - 9999999
+              - 9999999
             volumeMounts:
               - name: kaniko-secret
                 mountPath: /kaniko/.docker/config.json
