@@ -3,7 +3,7 @@ pipeline {
         kubernetes {
             yaml '''
         apiVersion: v1
-        kind: Job
+        kind: Pod
         spec:
           containers:
           - name: maven
