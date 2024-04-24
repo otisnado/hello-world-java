@@ -1,8 +1,8 @@
 podTemplate {
     node(POD_LABEL) {
-        stage('checkout') {
+        stage('Checkout') {
             steps {
-                checkout
+                git clone 'https://gitlab.otisnado.com/root/hello-world-java.git'
             }
         }
         stage('SonarQube Analysis') {
