@@ -1,13 +1,7 @@
-/* groovylint-disable-next-line CompileStatic */
-pipeline {
-    podTemplate {
-        node('jenkins-jenkins-agent-production') {
-            stages {
-                stage('Build Stage') {
-                    /* groovylint-disable-next-line NestedBlockDepth */
-                    sh 'mvn -B clean package'
-                }
-            }
+podTemplate {
+    node(POD_LABEL) {
+        stage('Run shell') {
+            sh 'echo hello world'
         }
     }
 }
