@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        productionK8s {
+        kubernetes {
             yaml '''
         apiVersion: v1
         kind: Job
