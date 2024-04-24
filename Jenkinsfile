@@ -50,5 +50,13 @@ pipeline {
                 }
             }
         }
+
+        stage('Build and push container image'){
+            steps{
+                container('kaniko'){
+                    sh '/kaniko/executor --context `pwd` --destination ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER}'
+                }
+            }
+        }
     }
 }
