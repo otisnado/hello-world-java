@@ -3,7 +3,7 @@ pipeline {
         productionK8s {
             yaml '''
         apiVersion: v1
-        kind: Pod
+        kind: Job
         spec:
           containers:
           - name: maven
