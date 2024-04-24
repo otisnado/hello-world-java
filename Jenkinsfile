@@ -1,10 +1,5 @@
 podTemplate {
     node(POD_LABEL) {
-        stage('Checkout') {
-            steps {
-                git clone 'https://gitlab.otisnado.com/root/hello-world-java.git'
-            }
-        }
         stage('SonarQube Analysis') {
             def mvn = tool 'Default Maven'
             withSonarQubeEnv() {
