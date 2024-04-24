@@ -2,9 +2,7 @@ podTemplate {
     node(POD_LABEL) {
         stage('checkout') {
             steps {
-                script {
-                    checkout
-                }
+                checkout
             }
         }
         stage('SonarQube Analysis') {
