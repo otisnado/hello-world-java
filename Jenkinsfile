@@ -23,6 +23,9 @@ pipeline {
             - sleep
             args:
             - 9999999
+            volumeMounts:
+              - name: kaniko-secret
+                mountPath: /secret
           - name: k8s-deploy
             image: otisnado/utils:latest
             command:
