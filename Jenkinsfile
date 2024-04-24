@@ -11,11 +11,17 @@ pipeline {
             command:
             - cat
             tty: true
+            volumeMounts:
+              - name: maven-cache
+                mountPath: /home/jenkins/.m2
           - name: sonarcli
             image: sonarsource/sonar-scanner-cli:latest
             command:
             - cat
             tty: true
+            volumeMounts:
+              - name: maven-cache
+                mountPath: /home/jenkins/.m2
           - name: kaniko
             image: gcr.io/kaniko-project/executor:debug
             imagePullPolicy: Always
@@ -35,6 +41,9 @@ pipeline {
             - name: kaniko-secret
               secret:
                 secretName: kaniko-secret
+            - name: maven-cache
+              hostPath:
+                path: /root/.m2
         '''
         }
     }
