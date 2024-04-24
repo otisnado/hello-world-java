@@ -33,7 +33,7 @@ pipeline {
               - name: kaniko-secret
                 mountPath: /kaniko/.docker
           - name: utils
-            image: otisnado/utils:v2
+            image: otisnado/utils:v2.0.1
             command:
             - cat
             tty: true
