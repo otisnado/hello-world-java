@@ -37,6 +37,9 @@ pipeline {
             command:
             - cat
             tty: true
+            volumeMounts:
+              - name: trivy-cache
+                mountPath: /home/jenkins/.cache
           volumes:
             - name: kaniko-secret
               secret:
@@ -44,6 +47,9 @@ pipeline {
             - name: maven-cache
               hostPath:
                 path: /root/.m2
+            - name: trivy-cache
+              hostPath:
+                path: /root/.cache
         '''
         }
     }
@@ -78,7 +84,15 @@ pipeline {
         stage('Scan container image') {
           steps {
             container('utils') {
-              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER}'
+              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER} --timeout 10m --output report.html || true'
+              publishHTML(target: [
+                allowMissing: true,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: '.',
+                reportFiles: 'report.html',
+                reportName: 'Trivy Report',
+              ])
             }
           }
         }
