@@ -1,4 +1,12 @@
 podTemplate {
+    checkout([$class: 'GitSCM',
+                branches: [[name: '*/main' ]],
+                extensions: scm.extensions,
+                userRemoteConfigs: [[
+                    url: 'https://gitlab.otisnado.com/root/hello-world-java.git',
+                    credentialsId: 'gitlab-token'
+                ]]
+            ])
     node(POD_LABEL) {
         stage('SonarQube Analysis') {
             def mvn = tool 'Default Maven'
