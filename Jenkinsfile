@@ -90,7 +90,7 @@ pipeline {
               sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER} --timeout 10m --output report.html || true'
               sh 'whoami && pwd && ls -la'
             }
-            publishHTMLtarget: [
+            publishHTML target: [
               allowMissing: true,
               alwaysLinkToLastBuild: false,
               keepAll: true,
