@@ -59,7 +59,7 @@ pipeline {
       steps {
         container('maven') {
           sh 'mvn -B clean package'
-          sh 'whoami'
+          sh 'whoami && pwd && ls -la'
         }
       }
         }
@@ -69,7 +69,7 @@ pipeline {
         container('maven') {
           withSonarQubeEnv(installationName: 'SonarQubeConnection') {
             sh "mvn clean verify sonar:sonar -Dsonar.projectKey=root_hello-world-java_314a7664-bb1d-4f4f-8bac-05e6fc8b8d9a -Dsonar.projectName='Hello World Java'"
-            sh 'whoami'
+            sh 'whoami && pwd && ls -la'
           }
         }
       }
@@ -79,7 +79,7 @@ pipeline {
       steps {
         container('kaniko') {
           sh '/kaniko/executor --context `pwd` --destination ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER}'
-          sh 'whoami'
+          sh 'whoami && pwd && ls -la'
         }
       }
         }
@@ -88,7 +88,7 @@ pipeline {
           steps {
             container('utils') {
               sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER} --timeout 10m --output report.html || true'
-              sh 'whoami'
+              sh 'whoami && pwd && ls -la'
             }
         publishHTML(target: [
                 allowMissing: true,
