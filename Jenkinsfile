@@ -25,7 +25,7 @@ pipeline {
               - 9999999
             volumeMounts:
               - name: kaniko-secret
-                mountPath: /kaniko/.docker/config.json
+                mountPath: /kaniko/.docker
           - name: k8s-deploy
             image: otisnado/utils:latest
             command:
