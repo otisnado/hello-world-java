@@ -1,7 +1,11 @@
 podTemplate {
     node(POD_LABEL) {
-        stage('Run shell') {
-            sh 'echo hello world'
+        stage('checkout') {
+            steps {
+                script {
+                    checkout
+                }
+            }
         }
         stage('SonarQube Analysis') {
             def mvn = tool 'Default Maven'
