@@ -31,10 +31,10 @@ pipeline {
             command:
             - cat
             tty: true
-        volumes:
-          - name: kaniko-secret
-            secret:
-              secretName: kaniko-secret
+          volumes:
+            - name: kaniko-secret
+              secret:
+                secretName: kaniko-secret
         '''
         }
     }
