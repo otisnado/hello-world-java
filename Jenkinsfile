@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            yaml '''
+      yaml '''
         apiVersion: v1
         kind: Pod
         spec:
@@ -32,8 +32,8 @@ pipeline {
             volumeMounts:
               - name: kaniko-secret
                 mountPath: /kaniko/.docker
-          - name: k8s-deploy
-            image: otisnado/utils:latest
+          - name: utils
+            image: otisnado/utils:v2
             command:
             - cat
             tty: true
@@ -50,29 +50,37 @@ pipeline {
 
     stages {
         stage('Build Stage') {
-            steps {
-                container('maven') {
-                    sh 'mvn -B clean package'
-                }
-            }
+      steps {
+        container('maven') {
+          sh 'mvn -B clean package'
+        }
+      }
         }
 
         stage('SonarQube Analysis') {
-            steps {
-                container('maven') {
-                    withSonarQubeEnv(installationName: 'SonarQubeConnection') {
-                        sh "mvn clean verify sonar:sonar -Dsonar.projectKey=root_hello-world-java_314a7664-bb1d-4f4f-8bac-05e6fc8b8d9a -Dsonar.projectName='Hello World Java'"
-                    }
-                }
-            }
+      steps {
+        container('maven') {
+          withSonarQubeEnv(installationName: 'SonarQubeConnection') {
+            sh "mvn clean verify sonar:sonar -Dsonar.projectKey=root_hello-world-java_314a7664-bb1d-4f4f-8bac-05e6fc8b8d9a -Dsonar.projectName='Hello World Java'"
+          }
+        }
+      }
         }
 
-        stage('Build and push container image'){
-            steps{
-                container('kaniko'){
-                    sh '/kaniko/executor --context `pwd` --destination ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER}'
-                }
+        stage('Build and push container image') {
+      steps {
+        container('kaniko') {
+          sh '/kaniko/executor --context `pwd` --destination ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER}'
+        }
+      }
+        }
+
+        stage('Scan container image') {
+          steps {
+            container('utils') {
+              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER}'
             }
+          }
         }
     }
 }
