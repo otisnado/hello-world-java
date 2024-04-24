@@ -44,7 +44,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 container('maven') {
-                    withSonarQubeEnv(installationName: 'SonarQubeScanner') {
+                    withSonarQubeEnv(installationName: 'SonarQubeConnection') {
                         sh "mvn clean verify sonar:sonar -Dsonar.projectKey=root_hello-world-java_314a7664-bb1d-4f4f-8bac-05e6fc8b8d9a -Dsonar.projectName='Hello World Java'"
                     }
                 }
