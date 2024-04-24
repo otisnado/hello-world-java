@@ -85,7 +85,8 @@ pipeline {
           steps {
             container('utils') {
               sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER} --timeout 10m --output report.html || true'
-              publishHTML(target: [
+            }
+        publishHTML(target: [
                 allowMissing: true,
                 alwaysLinkToLastBuild: false,
                 keepAll: true,
@@ -93,7 +94,6 @@ pipeline {
                 reportFiles: 'report.html',
                 reportName: 'Trivy Report',
               ])
-            }
           }
         }
     }
