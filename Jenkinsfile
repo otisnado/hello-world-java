@@ -59,6 +59,11 @@ pipeline {
         }
     }
 
+    environment {
+      CURRENT_VERSION = currentVersion()
+      NEXT_VERSION = nextVersion()
+    }
+
     stages {
         stage('Build Stage') {
       steps {
@@ -81,7 +86,7 @@ pipeline {
         stage('Build and push container image') {
       steps {
         container('kaniko') {
-          sh '/kaniko/executor --context `pwd` --destination ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER}'
+          sh '/kaniko/executor --context `pwd` --destination ${DOCKERHUB_USER}/${JOB_NAME}:${NEXT_VERSION}'
         }
       }
         }
@@ -89,7 +94,7 @@ pipeline {
         stage('Scan container image') {
           steps {
             container('utils') {
-              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER} --format template --template "@/home/jenkins/agent/trivy/html.tpl" --timeout 10m --output report.html || true'
+              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${NEXT_VERSION} --format template --template "@/home/jenkins/agent/trivy/html.tpl" --timeout 10m --output report.html || true'
             }
             publishHTML target: [
               allowMissing: true,
