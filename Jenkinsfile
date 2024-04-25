@@ -84,7 +84,7 @@ pipeline {
         stage('Scan container image') {
           steps {
             container('utils') {
-              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER} --format table --timeout 10m --output report.html || true'
+              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER} --format template --template "https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl" --timeout 10m --output report.html || true'
             }
             publishHTML target: [
               allowMissing: true,
