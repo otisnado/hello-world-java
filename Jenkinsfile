@@ -40,6 +40,8 @@ pipeline {
             volumeMounts:
               - name: trivy-cache
                 mountPath: /home/jenkins/.cache
+              - name: trivy-template
+                mountPath: /home/jenkins/.trivy-template
           volumes:
             - name: kaniko-secret
               secret:
@@ -50,6 +52,9 @@ pipeline {
             - name: trivy-cache
               hostPath:
                 path: /root/.cache
+            - name: trivy-template
+              configMap:
+                name: trivy-template
         '''
         }
     }
@@ -84,7 +89,7 @@ pipeline {
         stage('Scan container image') {
           steps {
             container('utils') {
-              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER} --format template --template template/html.tpl --timeout 10m --output report.html || true'
+              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${BUILD_NUMBER} --format template --template ../.trivy-template/html.tpl --timeout 10m --output report.html || true'
             }
             publishHTML target: [
               allowMissing: true,
