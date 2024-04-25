@@ -41,7 +41,7 @@ pipeline {
               - name: trivy-cache
                 mountPath: /home/jenkins/.cache
               - name: trivy-template
-                mountPath: /home/jenkins/.trivy-template
+                mountPath: /home/jenkins/${JOB_NAME}
           volumes:
             - name: kaniko-secret
               secret:
