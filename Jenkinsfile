@@ -70,7 +70,6 @@ pipeline {
         steps {
           container('gitversion') {
             sh 'whoami && id & ls -lah'
-            sh '/version'
           }
         }
       }
