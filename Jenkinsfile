@@ -73,7 +73,7 @@ pipeline {
       stage('Semantic version') {
         steps {
           container('gitversion') {
-            sh 'which gitversion'
+            sh '/tools/dotnet-gitversion `pwd` /output file /outputfile ./gitversion.json'
           }
         }
       }
