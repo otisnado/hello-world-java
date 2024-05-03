@@ -5,10 +5,6 @@ pipeline {
         apiVersion: v1
         kind: Pod
         spec:
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
           containers:
           - name: gitversion
             image: gittools/gitversion:5.12.0
@@ -74,7 +70,6 @@ pipeline {
         steps {
           container('gitversion') {
             sh '/tools/dotnet-gitversion `pwd` /output buildserver /outputfile ./gitversion.properties'
-            sh 'ls -lah && cat ./gitversion.properties'
             script {
               def props = readProperties file: 'gitversion.properties'
 
@@ -91,8 +86,8 @@ pipeline {
         stage('Build Stage') {
       steps {
         container('maven') {
-          sh 'ls -lah && echo ${GitVersion_SemVer}'
-          sh 'mvn -B clean package'
+          sh 'echo $HOME'
+          sh 'mvn -B clean package -DsemanticVersion="${GitVersion_SemVer}"'
         }
       }
         }
@@ -110,7 +105,7 @@ pipeline {
         stage('Build and push container image') {
       steps {
         container('kaniko') {
-          sh '/kaniko/executor --context `pwd` --destination ${DOCKERHUB_USER}/${JOB_NAME}:${NEXT_VERSION}'
+          sh '/kaniko/executor --context `pwd` --destination ${DOCKERHUB_USER}/${JOB_NAME}:${GitVersion_SemVer}'
         }
       }
         }

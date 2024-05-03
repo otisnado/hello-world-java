@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.otisnado</groupId>
 	<artifactId>helloWorld</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${semanticVersion}</version>
 	<name>helloWorld</name>
 	<description>Hello World API</description>
 	<properties>
