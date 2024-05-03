@@ -69,7 +69,6 @@ pipeline {
       stage('Semantic version') {
         steps {
           container('gitversion') {
-            sh 'ls -lah /repo && ls -lah /'
             sh '/output buildserver && ls -lah && cat .git/gitversion_cache/*.yaml'
             script {
               def props = readProperties file: '.git/gitversion_cache/*.yaml'
