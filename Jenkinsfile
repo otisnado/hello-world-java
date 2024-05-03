@@ -74,7 +74,7 @@ pipeline {
         steps {
           container('gitversion') {
             sh '/tools/dotnet-gitversion `pwd` /output buildserver /outputfile ./gitversion.properties'
-            sh 'ls -lah && cat ./gitversion.yml'
+            sh 'ls -lah && cat ./gitversion.properties'
             script {
               def props = readProperties file: 'gitversion.properties'
 
