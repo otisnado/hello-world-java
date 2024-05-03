@@ -15,9 +15,7 @@ pipeline {
           - name: maven
             image: maven:3.9.6-eclipse-temurin-17-alpine
             command:
-            - sleep
-            args:
-              - 999
+            - cat
             tty: true
             volumeMounts:
               - name: maven-cache
@@ -72,7 +70,7 @@ pipeline {
         steps {
           container('gitversion') {
             sh 'whoami && id & ls -lah'
-            sh '`pwd` /output buildserver && ls -lah && cat .git/gitversion_cache/*.yaml'
+            sh '`pwd` /output buildserver /outputfile `pwd`/gitversion.properties && ls -lah && cat .git/gitversion_cache/*.yaml'
           }
         }
       }
