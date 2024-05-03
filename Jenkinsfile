@@ -19,7 +19,7 @@ pipeline {
             tty: true
             volumeMounts:
               - name: maven-cache
-                mountPath: /home/jenkins/.m2
+                mountPath: /roo/.m2
           - name: sonarcli
             image: sonarsource/sonar-scanner-cli:latest
             command:
