@@ -15,6 +15,7 @@ pipeline {
             volumeMounts:
               - name: workspace-volume
                 mountPath: /repo
+                readOnly: false
           - name: maven
             image: maven:3.9.6-eclipse-temurin-17-alpine
             command:
