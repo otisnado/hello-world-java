@@ -73,10 +73,10 @@ pipeline {
       stage('Semantic version') {
         steps {
           container('gitversion') {
-            sh '/tools/dotnet-gitversion `pwd` /output file /outputfile ./gitversion.json'
-            sh 'ls -lah && cat ./gitversion.json'
+            sh '/tools/dotnet-gitversion `pwd` /output buildserver /outputfile ./gitversion.yml'
+            sh 'ls -lah && cat ./gitversion.yml'
             script {
-              def props = readJSON file: './gitversion.json'
+              def props = readYAML file: './gitversion.yml'
 
               env.GitVersion_SemVer = props.GitVersion_SemVer
               env.GitVersion_BranchName = props.GitVersion_BranchName
