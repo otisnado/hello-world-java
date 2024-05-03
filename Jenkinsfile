@@ -9,6 +9,9 @@ pipeline {
           - name: gitversion
             image: gittools/gitversion:5.12.0
             imagePullPolicy: Always
+            command:
+            - cat
+            tty: true
             volumeMounts:
               - name: workspace-volume
                 mountPath: /repo
