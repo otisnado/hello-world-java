@@ -71,7 +71,7 @@ pipeline {
           container('gitversion') {
             sh 'whoami && id & ls -lah'
             script {
-            def props = readYaml file: '.git/gitversion_cache/*.yaml'
+            def props = readYaml file: '.git/gitversion_cache/*.yml'
 
             env.GitVersion_SemVer = props.GitVersion_SemVer
             env.GitVersion_BranchName = props.GitVersion_BranchName
