@@ -71,7 +71,7 @@ pipeline {
       stage('Semantic version') {
         steps {
           container('gitversion') {
-            sh 'whoami && id'
+            sh 'whoami && id & ls -lah'
             sh '`pwd` /output buildserver && ls -lah && cat .git/gitversion_cache/*.yaml'
           }
         }
