@@ -70,7 +70,7 @@ pipeline {
         steps {
           container('gitversion') {
             sh 'whoami && id & ls -lah'
-            sh '`pwd` /output buildserver /outputfile `pwd`/gitversion.properties && ls -lah && cat .git/gitversion_cache/*.yaml'
+            sh '/version'
           }
         }
       }
