@@ -19,7 +19,7 @@ pipeline {
             tty: true
             volumeMounts:
               - name: maven-cache
-                mountPath: /roo/.m2
+                mountPath: /root/.m2
           - name: sonarcli
             image: sonarsource/sonar-scanner-cli:latest
             command:
@@ -27,7 +27,7 @@ pipeline {
             tty: true
             volumeMounts:
               - name: maven-cache
-                mountPath: /home/jenkins/.m2
+                mountPath: /root/.m2
           - name: kaniko
             image: gcr.io/kaniko-project/executor:debug
             imagePullPolicy: Always
