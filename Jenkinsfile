@@ -74,6 +74,7 @@ pipeline {
         steps {
           container('gitversion') {
             sh '/tools/dotnet-gitversion `pwd` /output file /outputfile ./gitversion.json'
+            sh 'ls -lah && cat ./gitversion.json'
             script {
               def props = readJSON file: './gitversion.json'
 
