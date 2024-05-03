@@ -74,6 +74,15 @@ pipeline {
         steps {
           container('gitversion') {
             sh '/tools/dotnet-gitversion `pwd` /output file /outputfile ./gitversion.json'
+            script {
+              def props = readJSON file: 'gitversion.json'
+
+              env.GitVersion_SemVer = props.GitVersion_SemVer
+              env.GitVersion_BranchName = props.GitVersion_BranchName
+              env.GitVersion_AssemblySemVer = props.GitVersion_AssemblySemVer
+              env.GitVersion_MajorMinorPatch = props.GitVersion_MajorMinorPatch
+              env.GitVersion_Sha = props.GitVersion_Sha
+            }
           }
         }
       }
@@ -81,7 +90,7 @@ pipeline {
         stage('Build Stage') {
       steps {
         container('maven') {
-          sh 'ls -lah'
+          sh 'ls -lah && echo ${GitVersion_SemVer}'
           sh 'mvn -B clean package'
         }
       }
