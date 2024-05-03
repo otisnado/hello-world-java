@@ -75,7 +75,7 @@ pipeline {
           container('gitversion') {
             sh '/tools/dotnet-gitversion `pwd` /output file /outputfile ./gitversion.json'
             script {
-              def props = readJSON file: 'gitversion.json'
+              def props = readJSON file: './gitversion.json'
 
               env.GitVersion_SemVer = props.GitVersion_SemVer
               env.GitVersion_BranchName = props.GitVersion_BranchName
