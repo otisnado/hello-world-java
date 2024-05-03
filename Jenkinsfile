@@ -6,6 +6,13 @@ pipeline {
         kind: Pod
         spec:
           containers:
+          - name: gitversion
+            image: gittools/gitversion:5.12.0
+            imagePullPolicy: Always
+            command:
+            - sleep
+            args:
+              - 9999999
           - name: maven
             image: maven:3.9.6-eclipse-temurin-17-alpine
             command:
@@ -59,12 +66,24 @@ pipeline {
         }
     }
 
-    environment {
-      CURRENT_VERSION = currentVersion()
-      NEXT_VERSION = nextVersion()
-    }
-
     stages {
+      stage('Semantic version') {
+        steps {
+          container('gitversion') {
+            sh '/tools/dotnet/gitversion /output buildserver'
+            script {
+              def props = readProperties file: 'gitversion.properties'
+              env.GitVersion_SemVer = props.GitVersion_SemVer
+              env.GitVersion_BranchName = props.GitVersion_BranchName
+              env.GitVersion_AssemblySemVer = props.GitVersion_AssemblySemVer
+              env.GitVersion_MajorMinorPatch = props.GitVersion_MajorMinorPatch
+              env.GitVersion_Sha = props.GitVersion_Sha
+            }
+            sh 'echo ${GitVersion_SemVer}'
+          }
+        }
+      }
+
         stage('Build Stage') {
       steps {
         container('maven') {
