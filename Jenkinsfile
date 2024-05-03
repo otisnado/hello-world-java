@@ -15,7 +15,8 @@ pipeline {
           - name: maven
             image: maven:3.9.6-eclipse-temurin-17-alpine
             command:
-            - cat
+            - sleep
+            args: 999
             tty: true
             volumeMounts:
               - name: maven-cache
@@ -69,7 +70,7 @@ pipeline {
       stage('Semantic version') {
         steps {
           container('gitversion') {
-            sh '/output buildserver && ls -lah && cat .git/gitversion_cache/*.yaml'
+            sh '`pwd` /output buildserver && ls -lah && cat .git/gitversion_cache/*.yaml'
             script {
               def props = readProperties file: '.git/gitversion_cache/*.yaml'
               env.GitVersion_SemVer = props.GitVersion_SemVer
