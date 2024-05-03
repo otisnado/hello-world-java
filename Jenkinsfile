@@ -69,7 +69,7 @@ pipeline {
       stage('Semantic version') {
         steps {
           container('gitversion') {
-            sh 'whoami && id & ls -lah'
+            sh '`pwd`'
           }
         }
       }
