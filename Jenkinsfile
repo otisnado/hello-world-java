@@ -73,7 +73,7 @@ pipeline {
       stage('Semantic version') {
         steps {
           container('gitversion') {
-            sh '`pwd` /output file'
+            sh 'which gitversion'
           }
         }
       }
