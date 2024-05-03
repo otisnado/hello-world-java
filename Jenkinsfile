@@ -71,16 +71,7 @@ pipeline {
       stage('Semantic version') {
         steps {
           container('gitversion') {
-            sh 'gitversion `pwd` /output buildserver && ls -lah && cat .git/gitversion_cache/*.yaml'
-            script {
-              def props = readProperties file: '.git/gitversion_cache/*.yaml'
-              env.GitVersion_SemVer = props.GitVersion_SemVer
-              env.GitVersion_BranchName = props.GitVersion_BranchName
-              env.GitVersion_AssemblySemVer = props.GitVersion_AssemblySemVer
-              env.GitVersion_MajorMinorPatch = props.GitVersion_MajorMinorPatch
-              env.GitVersion_Sha = props.GitVersion_Sha
-            }
-            sh 'echo ${GitVersion_SemVer}'
+            sh '`pwd` /output buildserver && ls -lah && cat .git/gitversion_cache/*.yaml'
           }
         }
       }
