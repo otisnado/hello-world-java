@@ -9,10 +9,9 @@ pipeline {
           - name: gitversion
             image: gittools/gitversion:5.12.0
             imagePullPolicy: Always
-            command:
-            - sleep
-            args:
-              - 9999999
+            volumeMounts:
+              - name: workspace-volume
+                mountPath: /repo
           - name: maven
             image: maven:3.9.6-eclipse-temurin-17-alpine
             command:
@@ -70,9 +69,9 @@ pipeline {
       stage('Semantic version') {
         steps {
           container('gitversion') {
-            sh '/output buildserver && ls -lah && cat gitversion.properties'
+            sh '/output buildserver && ls -lah && cat .git/gitversion_cache/*.yaml'
             script {
-              def props = readProperties file: 'gitversion.properties'
+              def props = readProperties file: '.git/gitversion_cache/*.yaml'
               env.GitVersion_SemVer = props.GitVersion_SemVer
               env.GitVersion_BranchName = props.GitVersion_BranchName
               env.GitVersion_AssemblySemVer = props.GitVersion_AssemblySemVer
