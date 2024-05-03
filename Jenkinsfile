@@ -16,7 +16,8 @@ pipeline {
             image: maven:3.9.6-eclipse-temurin-17-alpine
             command:
             - sleep
-            args: 999
+            args:
+              - 999
             tty: true
             volumeMounts:
               - name: maven-cache
