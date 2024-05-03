@@ -69,7 +69,7 @@ pipeline {
       stage('Semantic version') {
         steps {
           container('gitversion') {
-            sh '`pwd`'
+            sh '/output file'
           }
         }
       }
@@ -77,9 +77,7 @@ pipeline {
         stage('Build Stage') {
       steps {
         container('maven') {
-          sh 'ls -lah .git'
-          sh 'ls -lah .git/gitversion_cache'
-          sh 'echo ${GitVersion_SemVer}'
+          sh 'ls -lah'
           sh 'mvn -B clean package'
         }
       }
