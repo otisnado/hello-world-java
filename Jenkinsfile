@@ -88,8 +88,8 @@ pipeline {
       stage('Build Stage') {
         steps {
           container('maven') {
-            sh 'echo $HOME'
-            sh 'mvn -B clean package -DsemanticVersion="${GitVersion_SemVer}"'
+            sh 'mvn build-helper:parse-version versions:set -DnewVersion="${GitVersion_SemVer}"'
+            sh 'mvn -B clean package'
           }
         }
       }
