@@ -92,6 +92,16 @@ pipeline {
       }
         }
 
+        stage('OWASP FS Scan') {
+          steps {
+            container('utils') {
+              dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'owasp-dp-check'
+              dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+              sh 'trivy fs . > trivyfs.txt'
+            }
+          }
+        }
+
         stage('SonarQube Analysis') {
       steps {
         container('maven') {
@@ -113,16 +123,16 @@ pipeline {
         stage('Scan container image') {
           steps {
             container('utils') {
-              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${NEXT_VERSION} --format template --template "@/home/jenkins/agent/trivy/html.tpl" --timeout 10m --output report.html || true'
+              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${NEXT_VERSION} > report.txt'
             }
-            publishHTML target: [
-              allowMissing: true,
-              alwaysLinkToLastBuild: false,
-              keepAll: true,
-              reportDir: '.',
-              reportFiles: 'report.html',
-              reportName: 'Trivy Report',
-            ]
+            // publishHTML target: [
+            //   allowMissing: true,
+            //   alwaysLinkToLastBuild: false,
+            //   keepAll: true,
+            //   reportDir: '.',
+            //   reportFiles: 'report.html',
+            //   reportName: 'Trivy Report',
+            // ]
           }
         }
     }
