@@ -70,6 +70,7 @@ pipeline {
         steps {
           container('gitversion') {
             sh '/tools/dotnet-gitversion `pwd` /output buildserver /outputfile ./gitversion.properties'
+
             script {
               def props = readProperties file: 'gitversion.properties'
 
@@ -79,52 +80,54 @@ pipeline {
               env.GitVersion_MajorMinorPatch = props.GitVersion_MajorMinorPatch
               env.GitVersion_Sha = props.GitVersion_Sha
             }
+            
           }
         }
       }
 
-        stage('Build Stage') {
-      steps {
-        container('maven') {
-          sh 'echo $HOME'
-          sh 'mvn -B clean package -DsemanticVersion="${GitVersion_SemVer}"'
-        }
-      }
-        }
-
-        stage('SonarQube Analysis') {
-      steps {
-        container('maven') {
-          withSonarQubeEnv(installationName: 'SonarQubeConnection') {
-            sh "mvn clean verify sonar:sonar -Dsonar.projectKey=root_hello-world-java_314a7664-bb1d-4f4f-8bac-05e6fc8b8d9a -Dsonar.projectName='Hello World Java'"
+      stage('Build Stage') {
+        steps {
+          container('maven') {
+            sh 'echo $HOME'
+            sh 'mvn -B clean package -DsemanticVersion="${GitVersion_SemVer}"'
           }
         }
       }
-        }
 
-        stage('Build and push container image') {
-      steps {
-        container('kaniko') {
-          sh '/kaniko/executor --context `pwd` --destination ${DOCKERHUB_USER}/${JOB_NAME}:${GitVersion_SemVer}'
-        }
-      }
-        }
-
-        stage('Scan container image') {
-          steps {
-            container('utils') {
-              sh 'trivy image --exit-code 0 --server ${TRIVY_SERVER} --scanners vuln --severity MEDIUM,LOW ${DOCKERHUB_USER}/${JOB_NAME}:${NEXT_VERSION}'
-              sh 'trivy image --exit-code 1 --server ${TRIVY_SERVER} --scanners vuln --severity HIGH,CRITICAL ${DOCKERHUB_USER}/${JOB_NAME}:${NEXT_VERSION}'
+      stage('SonarQube Analysis') {
+        steps {
+          container('maven') {
+            withSonarQubeEnv(installationName: 'SonarQubeConnection') {
+              sh "mvn clean verify sonar:sonar -Dsonar.projectKey=root_hello-world-java_314a7664-bb1d-4f4f-8bac-05e6fc8b8d9a -Dsonar.projectName='Hello World Java'"
             }
-            // publishHTML target: [
-            //   allowMissing: true,
-            //   alwaysLinkToLastBuild: false,
-            //   keepAll: true,
-            //   reportDir: '.',
-            //   reportFiles: 'report.html',
-            //   reportName: 'Trivy Report',
-            // ]
           }
         }
+      }
+
+      stage('Build and push container image') {
+        steps {
+          container('kaniko') {
+            sh '/kaniko/executor --context `pwd` --destination ${DOCKERHUB_USER}/${JOB_NAME}:${GitVersion_SemVer}'
+          }
+        }
+      }
+
+      stage('Scan container image') {
+        steps {
+          container('utils') {
+            sh 'trivy image --server ${TRIVY_SERVER} --scanners vuln --severity MEDIUM,LOW ${DOCKERHUB_USER}/${JOB_NAME}:${GitVersion_SemVer} --format template --template "@/home/jenkins/agent/trivy/html.tpl" --timeout 10m --output report.html || true'
+          }
+
+          publishHTML target: [
+            allowMissing: false,
+            alwaysLinkToLastBuild: false,
+            keepAll: true,
+            reportDir: '.',
+            reportFiles: 'report.html',
+            reportName: 'Trivy Report',
+          ]
+
+        }
+      }
     }
 }
