@@ -115,7 +115,7 @@ pipeline {
       stage('Scan container image') {
         steps {
           container('utils') {
-            sh 'trivy image --server ${TRIVY_SERVER} --scanners vuln --severity MEDIUM,LOW ${DOCKERHUB_USER}/${JOB_NAME}:${GitVersion_SemVer} --format template --template "@/home/jenkins/agent/trivy/html.tpl" --timeout 10m --output report.html || true'
+            sh 'trivy image --server ${TRIVY_SERVER} --scanners vuln --severity HIGH,CRITICAL,MEDIUM,LOW ${DOCKERHUB_USER}/${JOB_NAME}:${GitVersion_SemVer} --format template --template "@/home/jenkins/agent/trivy/html.tpl" --timeout 10m --output report.html || true'
           }
 
           publishHTML target: [
