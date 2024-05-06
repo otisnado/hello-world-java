@@ -92,16 +92,6 @@ pipeline {
       }
         }
 
-        stage('OWASP FS Scan') {
-          steps {
-            container('utils') {
-              dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'owasp-dp-check'
-              dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-              sh 'trivy fs . > trivyfs.txt'
-            }
-          }
-        }
-
         stage('SonarQube Analysis') {
       steps {
         container('maven') {
@@ -123,7 +113,8 @@ pipeline {
         stage('Scan container image') {
           steps {
             container('utils') {
-              sh 'trivy image ${DOCKERHUB_USER}/${JOB_NAME}:${NEXT_VERSION} > report.txt'
+              sh 'trivy image --exit-code 0 --server ${TRIVY_SERVER} --scanners vuln --severity MEDIUM,LOW ${DOCKERHUB_USER}/${JOB_NAME}:${NEXT_VERSION}'
+              sh 'trivy image --exit-code 1 --server ${TRIVY_SERVER} --scanners vuln --severity HIGH,CRITICAL ${DOCKERHUB_USER}/${JOB_NAME}:${NEXT_VERSION}'
             }
             // publishHTML target: [
             //   allowMissing: true,
