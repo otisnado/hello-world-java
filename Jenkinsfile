@@ -28,6 +28,8 @@ pipeline {
             volumeMounts:
               - name: maven-cache
                 mountPath: /root/.m2
+              - name: sonar-cache
+                mountPath: /root/.sonar/cache
           - name: kaniko
             image: gcr.io/kaniko-project/executor:debug
             imagePullPolicy: Always
@@ -55,6 +57,9 @@ pipeline {
             - name: maven-cache
               hostPath:
                 path: /root/.m2
+            - name: sonar-cache
+              hostPath:
+                path: /root/.sonar/cache
             - name: trivy-cache
               hostPath:
                 path: /root/.cache
