@@ -167,7 +167,8 @@ pipeline {
             sh 'ls -lah'
             // sh 'git config user.email "jenkins-agent@otisnado.com"'
             // sh 'git config user.name "${BUILD_TAG}"'
-            sh 'git add index.yaml charts/* ${JOB_NAME}/*'
+            sh 'git config --global --add safe.directory `pwd`'
+            sh 'git add index.yaml charts/${JOB_NAME}-${GitVersion_SemVer}.tgz ${JOB_NAME}/Chart.yaml'
             sh 'git commit -m "Update appVersion and chart version in ${JOB_NAME} chart"'
             sh 'git push'
           }
