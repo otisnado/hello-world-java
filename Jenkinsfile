@@ -134,5 +134,34 @@ pipeline {
 
         }
       }
+
+      stage('Update App Version in Helm Chart'){
+        steps{
+          container('utils'){
+            git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/otisnado/helmcharts.git'
+            sh 'ls -lah ./helmcharts'
+            def chartFile = readYaml file: './helmcharts/${JOB_NAME}/Chart.yaml'
+            assert chartFile.appVersion = '"${GitVersion_SemVer}"'
+          }
+        }
+      }
+
+      stage('Package Helm Chart'){
+        steps{
+          container('utils'){
+            sh 'helm package ./helmcharts/${JOB_NAME}'
+            sh 'ls -lah ./helmcharts/${JOB_NAME}'
+          }
+        }
+      }
+
+      stage('Index Helm repo'){
+        steps{
+          container('utils'){
+            sh 'helm repo index ./helmcharts'
+            sh 'ls -lah ./helmcharts/${JOB_NAME}'
+          }
+        }
+      }
     }
 }
