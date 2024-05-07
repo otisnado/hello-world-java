@@ -141,9 +141,11 @@ pipeline {
             git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/otisnado/helmcharts.git'
             sh 'ls -lah'
             script{
-              def chartFile = readYaml file: './helmcharts/${JOB_NAME}/Chart.yaml'
+              def chartFile = readYaml file: './${JOB_NAME}/Chart.yaml'
               assert chartFile.appVersion == '"${GitVersion_SemVer}"'
+              assert chartFile.version == '${GitVersion_SemVer}'
             }
+            sh 'cat ./${JOB_NAME}/Chart.yaml'
           }
         }
       }
@@ -151,8 +153,10 @@ pipeline {
       stage('Package Helm Chart'){
         steps{
           container('utils'){
-            sh 'helm package ./helmcharts/${JOB_NAME}'
-            sh 'ls -lah ./helmcharts/${JOB_NAME}'
+            sh 'helm package ${JOB_NAME}'
+            sh 'ls -lah ${JOB_NAME}'
+            sh 'mv ${JOB_NAME}-${GitVersion_SemVer}.tgz charts/${JOB_NAME}-${GitVersion_SemVer}.tgz'
+            sh 'ls -lah charts'
           }
         }
       }
@@ -160,8 +164,8 @@ pipeline {
       stage('Index Helm repo'){
         steps{
           container('utils'){
-            sh 'helm repo index ./helmcharts'
-            sh 'ls -lah ./helmcharts/${JOB_NAME}'
+            sh 'helm repo index .'
+            sh 'cat index.yaml'
           }
         }
       }
