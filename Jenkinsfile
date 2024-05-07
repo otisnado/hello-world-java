@@ -138,6 +138,7 @@ pipeline {
       stage('Checkout Helm Chart repository'){
         steps{
           container('utils'){
+            cleanWs()
             git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/otisnado/helmcharts.git'
           }
         }
