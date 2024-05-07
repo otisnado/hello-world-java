@@ -135,18 +135,10 @@ pipeline {
         }
       }
 
-      stage('Update App Version in Helm Chart'){
+      stage('Checkout Helm Chart repository'){
         steps{
           container('utils'){
             git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/otisnado/helmcharts.git'
-            sh 'ls -lah'
-            sh 'cat `pwd`/${JOB_NAME}/Chart.yaml'
-            script{
-              def chartFile = readYaml file: "${JOB_NAME}/Chart.yaml"
-              assert chartFile.appVersion == '2.0.2'
-              assert chartFile.version == '2.2.4'
-            }
-            sh 'cat ./${JOB_NAME}/Chart.yaml'
           }
         }
       }
@@ -154,19 +146,29 @@ pipeline {
       stage('Package Helm Chart'){
         steps{
           container('utils'){
-            sh 'helm package ${JOB_NAME}'
-            sh 'ls -lah ${JOB_NAME}'
-            sh 'mv ${JOB_NAME}-${GitVersion_SemVer}.tgz charts/${JOB_NAME}-${GitVersion_SemVer}.tgz'
+            sh 'helm package ${JOB_NAME} --app-version ${GitVersion_SemVer} --version ${GitVersion_SemVer} --destination `pwd`/charts'
             sh 'ls -lah charts'
           }
         }
       }
 
-      stage('Index Helm repo'){
+      stage('Index Helm repository'){
         steps{
           container('utils'){
             sh 'helm repo index .'
             sh 'cat index.yaml'
+          }
+        }
+      }
+
+      stage('Push Helm Chart'){
+        steps{
+          container('utils'){
+            sh 'git config user.email "jenkins-agent@otisnado.com"'
+            sh 'git config user.name "${BUILD_TAG}"'
+            sh 'git add charts/* ${JOB_NAME}/*'
+            sh 'git commit -m "Update appVersion and chart version in ${JOB_NAME} chart"'
+            sh 'git push'
           }
         }
       }
