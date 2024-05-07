@@ -165,9 +165,9 @@ pipeline {
         steps{
           container('utils'){
             sh 'ls -lah'
-            sh 'git config user.email "jenkins-agent@otisnado.com"'
-            sh 'git config user.name "${BUILD_TAG}"'
-            sh 'git add charts/* ${JOB_NAME}/*'
+            // sh 'git config user.email "jenkins-agent@otisnado.com"'
+            // sh 'git config user.name "${BUILD_TAG}"'
+            sh 'git add index.yaml charts/* ${JOB_NAME}/*'
             sh 'git commit -m "Update appVersion and chart version in ${JOB_NAME} chart"'
             sh 'git push'
           }
