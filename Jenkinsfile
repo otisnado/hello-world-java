@@ -142,7 +142,7 @@ pipeline {
             sh 'ls -lah ./helmcharts'
             script{
               def chartFile = readYaml file: './helmcharts/${JOB_NAME}/Chart.yaml'
-              assert chartFile.appVersion = '"${GitVersion_SemVer}"'
+              assert chartFile.appVersion == '"${GitVersion_SemVer}"'
             }
           }
         }
