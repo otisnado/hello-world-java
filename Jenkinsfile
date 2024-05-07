@@ -140,8 +140,9 @@ pipeline {
           container('utils'){
             git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/otisnado/helmcharts.git'
             sh 'ls -lah'
+            sh 'cat `pwd`/${JOB_NAME}/Chart.yaml'
             script{
-              def chartFile = readYaml file: './${JOB_NAME}/Chart.yaml'
+              def chartFile = readYaml file: '`pwd`/${JOB_NAME}/Chart.yaml'
               assert chartFile.appVersion == '"${GitVersion_SemVer}"'
               assert chartFile.version == '${GitVersion_SemVer}'
             }
