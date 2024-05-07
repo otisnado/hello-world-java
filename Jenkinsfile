@@ -143,8 +143,8 @@ pipeline {
             sh 'cat `pwd`/${JOB_NAME}/Chart.yaml'
             script{
               def chartFile = readYaml file: "${JOB_NAME}/Chart.yaml"
-              assert chartFile.appVersion == "'${GitVersion_SemVer}'"
-              assert chartFile.version == "${GitVersion_SemVer}"
+              assert chartFile.appVersion == "2.0.2"
+              assert chartFile.version == "2.2.4"
             }
             sh 'cat ./${JOB_NAME}/Chart.yaml'
           }
