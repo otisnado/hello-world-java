@@ -164,6 +164,7 @@ pipeline {
       stage('Push Helm Chart'){
         steps{
           container('utils'){
+            sh 'ls -lah'
             sh 'git config user.email "jenkins-agent@otisnado.com"'
             sh 'git config user.name "${BUILD_TAG}"'
             sh 'git add charts/* ${JOB_NAME}/*'
