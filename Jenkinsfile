@@ -138,8 +138,11 @@ pipeline {
       stage('Checkout Helm Chart repository'){
         steps{
           container('utils'){
+            sh 'ls -lah'
             cleanWs()
+            sh 'ls -lah'
             git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/otisnado/helmcharts.git'
+            sh 'ls -lah'
           }
         }
       }
@@ -148,6 +151,7 @@ pipeline {
         steps{
           container('utils'){
             sh 'helm package ${JOB_NAME} --app-version ${GitVersion_SemVer} --version ${GitVersion_SemVer} --destination `pwd`/charts'
+            sh 'cat `pwd`/${JOB_NAME}/Chart.yaml'
             sh 'ls -lah charts'
           }
         }
